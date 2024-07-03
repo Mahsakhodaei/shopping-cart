@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./css/style.css" />
+    <link rel="stylesheet" href="./css/font.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      integrity="sha512-iBBXm8fW90+شnuLcSKlbmrPcLa0OT92xO1BIsZ+ywDWZCvqsWgccV3gFoRBv0z+8dLJgyAHIhR35VZc2oM/gI1w=="
+      crossorigin="anonymous"
+    />
+    <title>Shopping Cart</title>
+  </head>
+  <body>
+    <div class="main-container">
+      <!-- Navigation -->
+      <nav class="navbar">
+        <div class="navbar-center container">
+          <span class="nav-icon">
+            <i class="fas fa-bars"></i>
+          </span>
+          <span class="nav-title">MAHSA shopping</span>
+          <div class="cart-btn">
+            <span class="nav-icon">
+              <i class="fas fa-cart-plus"></i>
+            </span>
+            <div class="cart-items">0</div>
+          </div>
+        </div>
+      </nav>
+
+      <!-- products -->
+      <section class="products container">
+        <div class="section-title">
+          <h2>our products</h2>
+        </div>
+        <!-- single product -->
+        <div class="products-center">
+          <div class="product">
+            <div class="img-container">
+              <img src="./assets/images/product-6.jpeg" class="product-img" />
+            </div>
+            <div class="desc-container">
+              <div class="product-desc">
+                <p class="product-price">$ 11.99</p>
+                <p class="product-title">carpet</p>
+              </div>
+              <button class="btn add-to-cart">
+                <i class="fas fa-shopping-cart"></i>
+                add to cart
+              </button>
+            </div>
+          </div>
+          <div class="product">
+            <div class="img-container">
+              <img src="./assets/images/product-7.jpeg" class="product-img" />
+            </div>
+            <div class="desc-container">
+              <div class="product-desc">
+                <p class="product-price">$ 11.99</p>
+                <p class="product-title">carpet</p>
+              </div>
+              <button class="btn add-to-cart">
+                <i class="fas fa-shopping-cart"></i>
+                add to cart
+              </button>
+            </div>
+          </div>
+          <div class="product">
+            <div class="img-container">
+              <img src="./assets/images/product-8.jpeg" class="product-img" />
+            </div>
+            <div class="desc-container">
+              <div class="product-desc">
+                <p class="product-price">$ 11.99</p>
+                <p class="product-title">carpet</p>
+              </div>
+              <button class="btn add-to-cart">
+                <i class="fas fa-shopping-cart"></i>
+                add to cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- modal -->
+      <section class="modal-container">
+        <div class="backdrop"></div>
+        <div class="modal">
+          <h3 class="modal-title">your cart</h3>
+          <div class="modal-content">
+            <!-- singel item  -->
+            <div class="modal-item">
+              <img
+                src="./assets/images/product-4.jpeg"
+                class="modal-item-img"
+              />
+              <div class="modal-item-desc">
+                <h4>name</h4>
+                <h5>price20000$</h5>
+              </div>
+              <div class="modal-item-controller">
+                <i class="fas fa-chevron-up"></i>
+                <p>1</p>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <i class="fas fa-trash remove-item"></i>
+            </div>
+            <div class="modal-item">
+              <img
+                src="./assets/images/product-2.jpeg"
+                class="modal-item-img"
+              />
+              <div class="modal-item-desc">
+                <h4>name</h4>
+                <h5>price20000$</h5>
+              </div>
+              <div class="modal-item-controller">
+                <i class="fas fa-chevron-up"></i>
+                <p>1</p>
+                <i class="fas fa-chevron-down"></i>
+              </div>
+              <i class="fas fa-trash remove-item"></i>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <span>total price :</span>
+            <button class="btn clear-cart">clear cart</button>
+            <button class="btn cart-item-confirm">confirm</button>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <script src="./js/main.js"></script>
+  </body>
+</html>
