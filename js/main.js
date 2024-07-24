@@ -1,12 +1,15 @@
 // ------------- variables ------------
+let cart = [];
 
 // ------------- selecting ------------
 import { productsData } from "./products.js";
+
 const cartBtn = document.querySelector(".cart-btn");
 const backdrop = document.querySelector(".backdrop");
 const modal = document.querySelector(".modal");
 const productDOM = document.querySelector(".products-center");
 
+// console.log(addToCardBtn);
 // ------------- event ------------
 cartBtn.addEventListener("click", showModal);
 backdrop.addEventListener("click", closeModal);
@@ -54,12 +57,46 @@ class UI {
       productDOM.innerHTML = result;
     });
   }
+  getAddToCardBtns() {
+    const addToCardBtn = document.querySelectorAll(".add-to-cart");
+    const buttons = [...addToCardBtn];
+
+    buttons.forEach((btn) => {
+      const id = btn.dataset.id;
+      //check if this product id is in cart or not !
+      const isInCart = cart.find((p) => p.id === id);
+      if (isInCart) {
+        btn.innerText = "In Cart";
+        btn.disabled = true;
+      }
+
+      btn.addEventListener("click", (event) => {
+        event.target.innerText = "In Cart";
+        event.target.disabled = true;
+        // ّget product from local storage
+        const addedproduct = Storage.getproduct(id);
+        // add to cart
+        cart = [...cart, { ...addedproduct, quantity: 1 }];
+        // save cart to local storage
+        Storage.saveCart(cart);
+        // update cart value
+        // add to cart item
+      });
+    });
+  }
 }
 
 // 3.storage
 class Storage {
   static saveProducts(products) {
     localStorage.setItem("products", JSON.stringify(products));
+  }
+  static getproduct(id) {
+    const _product = JSON.parse(localStorage.getItem("products"));
+    return _product.find((p) => p.id === parseInt(id));
+  }
+  static saveCart(cart) {
+    localStorage.setItem("cart", JSON.stringify(cart));
   }
 }
 
@@ -68,5 +105,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const productData = products.getproducts();
   const ui = new UI();
   ui.displayProducts(productData);
+  ui.getAddToCardBtns();
   Storage.saveProducts(productData);
 });
