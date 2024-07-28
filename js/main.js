@@ -1,5 +1,6 @@
 // ------------- variables ------------
 let cart = [];
+let buttonsDom = [];
 
 // ------------- selecting ------------
 import { productsData } from "./products.js";
@@ -8,6 +9,10 @@ const cartBtn = document.querySelector(".cart-btn");
 const backdrop = document.querySelector(".backdrop");
 const modal = document.querySelector(".modal");
 const productDOM = document.querySelector(".products-center");
+const cartItems = document.querySelector(".cart-items");
+const cartTotal = document.querySelector(".cart-total");
+const modalContent = document.querySelector(".modal-content");
+const clearCart = document.querySelector(".clear-cart");
 
 // console.log(addToCardBtn);
 // ------------- event ------------
@@ -49,7 +54,6 @@ class UI {
           <p class="product-title">${item.title}</p>
         </div>
         <button class="btn add-to-cart" data-id=${item.id}>
-          <i class="fas fa-shopping-cart"></i>
           add to cart
         </button>
       </div>
@@ -57,14 +61,15 @@ class UI {
       productDOM.innerHTML = result;
     });
   }
-  getAddToCardBtns() {
-    const addToCardBtn = document.querySelectorAll(".add-to-cart");
-    const buttons = [...addToCardBtn];
 
-    buttons.forEach((btn) => {
+  getAddToCardBtns() {
+    const addToCardBtn = [...document.querySelectorAll(".add-to-cart")];
+    buttonsDom = addToCardBtn;
+
+    addToCardBtn.forEach((btn) => {
       const id = btn.dataset.id;
       //check if this product id is in cart or not !
-      const isInCart = cart.find((p) => p.id === id);
+      const isInCart = cart.find((p) => p.id === parseInt(id));
       if (isInCart) {
         btn.innerText = "In Cart";
         btn.disabled = true;
@@ -74,15 +79,91 @@ class UI {
         event.target.innerText = "In Cart";
         event.target.disabled = true;
         // ّget product from local storage
-        const addedproduct = Storage.getproduct(id);
+        const addedproduct = { ...Storage.getproduct(id), quantity: 1 };
         // add to cart
-        cart = [...cart, { ...addedproduct, quantity: 1 }];
+        cart = [...cart, addedproduct];
         // save cart to local storage
         Storage.saveCart(cart);
         // update cart value
+        this.setCartValue(cart);
         // add to cart item
+        this.addCartItem(addedproduct);
+        // get cart from storage!
       });
     });
+  }
+
+  setCartValue(cart) {
+    let tempCountItems = 0;
+    const totalPrice = cart.reduce((acc, curr) => {
+      tempCountItems += curr.quantity;
+      return acc + curr.price * curr.quantity;
+    }, 0);
+    cartTotal.innerText = `Total price : ${totalPrice.toFixed(2)} $`;
+    cartItems.innerText = tempCountItems;
+  }
+
+  addCartItem(cartItem) {
+    const div = document.createElement("div");
+    div.classList.add("modal-item");
+    div.innerHTML = `<img
+    src=${cartItem.imageUrl}
+    class="modal-item-img"
+  />
+  <div class="modal-item-desc">
+    <h4>${cartItem.title}</h4>
+    <h5>${cartItem.price} $</h5>
+  </div>
+  <div class="modal-item-controller">
+    <i class="fas fa-chevron-up"></i>
+    <p>${cartItem.quantity}</p>
+    <i class="fas fa-chevron-down"></i>
+  </div>
+  <i class="fas fa-trash-alt remove-item"></i>`;
+    modalContent.appendChild(div);
+  }
+
+  setupApp() {
+    // get cart from storage
+    cart = Storage.getCart() || [];
+    // add cart item
+    cart.forEach((cartItem) => this.addCartItem(cartItem));
+    // set value : total parice + items
+    this.setCartValue(cart);
+  }
+
+  cartLogic() {
+    // clear cart :
+    clearCart.addEventListener("click", () => this.clearCart());
+  }
+
+  clearCart() {
+    // remove : (DRY) =>
+    cart.forEach((cItem) => this.removeItem(cItem.id));
+    //remove cart content children
+    while (modalContent.children.length) {
+      modalContent.removeChild(modalContent.children[0]);
+    }
+    closeModal();
+  }
+
+  removeItem(id) {
+    //update cart
+    cart = cart.filter((cartItem) => cartItem.id !== id);
+    // update total price + items
+    this.setCartValue(cart);
+    //update storage
+    Storage.saveCart(cart);
+    //get add to cart btns => update text and disable
+    this.getSingleButton(id);
+  }
+
+  getSingleButton(id) {
+    const button = buttonsDom.find(
+      (btn) => parseInt(btn.dataset.id) === parseInt(id)
+    );
+    button.innerText = "add to cart";
+    button.disabled = false;
   }
 }
 
@@ -91,20 +172,29 @@ class Storage {
   static saveProducts(products) {
     localStorage.setItem("products", JSON.stringify(products));
   }
+
   static getproduct(id) {
     const _product = JSON.parse(localStorage.getItem("products"));
     return _product.find((p) => p.id === parseInt(id));
   }
+
   static saveCart(cart) {
     localStorage.setItem("cart", JSON.stringify(cart));
+  }
+
+  static getCart() {
+    return JSON.parse(localStorage.getItem("cart"));
   }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
   const products = new Products();
   const productData = products.getproducts();
+  // set up : get cart and set up app :
   const ui = new UI();
+  ui.setupApp();
   ui.displayProducts(productData);
   ui.getAddToCardBtns();
+  ui.cartLogic();
   Storage.saveProducts(productData);
 });
