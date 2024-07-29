@@ -152,7 +152,7 @@ class UI {
         // 3. save cart
         Storage.saveCart(cart);
         // 4. update cart item in UI :
-        console.log(addedQuontity.nextElementSibling);
+        // console.log(addedQuontity.nextElementSibling);
         addedQuontity.nextElementSibling.innerText = addedItem.quantity;
       } else if (event.target.classList.contains("fa-trash-alt")) {
         const removeItem = event.target;
