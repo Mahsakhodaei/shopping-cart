@@ -115,11 +115,11 @@ class UI {
     <h5>${cartItem.price} $</h5>
   </div>
   <div class="modal-item-controller">
-    <i class="fas fa-chevron-up"></i>
+    <i class="fas fa-chevron-up" data-id=${cartItem.id}></i>
     <p>${cartItem.quantity}</p>
-    <i class="fas fa-chevron-down"></i>
+    <i class="fas fa-chevron-down" data-id=${cartItem.id}></i>
   </div>
-  <i class="fas fa-trash-alt remove-item"></i>`;
+  <i class="fas fa-trash-alt remove-item" data-id=${cartItem.id}></i>`;
     modalContent.appendChild(div);
   }
 
@@ -135,6 +135,54 @@ class UI {
   cartLogic() {
     // clear cart :
     clearCart.addEventListener("click", () => this.clearCart());
+
+    // cart functionality:
+    modalContent.addEventListener("click", (event) => {
+      // console.log(event.target);
+      if (event.target.classList.contains("fa-chevron-up")) {
+        // console.log(event.target.dataset.id);
+        const addedQuontity = event.target;
+        // 1. get item from cart
+        const addedItem = cart.find(
+          (item) => item.id === parseInt(addedQuontity.dataset.id)
+        );
+        addedItem.quantity++;
+        // 2. update cart value
+        this.setCartValue(cart);
+        // 3. save cart
+        Storage.saveCart(cart);
+        // 4. update cart item in UI :
+        console.log(addedQuontity.nextElementSibling);
+        addedQuontity.nextElementSibling.innerText = addedItem.quantity;
+      } else if (event.target.classList.contains("fa-trash-alt")) {
+        const removeItem = event.target;
+        const _removedItem = cart.find(
+          (item) => item.id === parseInt(removeItem.dataset.id)
+        );
+        // remove from cartItem
+        this.removeItem(_removedItem.id);
+        // remove item in UI :
+        modalContent.removeChild(removeItem.parentElement);
+      } else if (event.target.classList.contains("fa-chevron-down")) {
+        const subQuontity = event.target;
+        // 1. get item from cart
+        const substractedItem = cart.find(
+          (item) => item.id === parseInt(subQuontity.dataset.id)
+        );
+        if (substractedItem.quantity === 1) {
+          this.removeItem(substractedItem.id);
+          modalContent.removeChild(subQuontity.parentElement.parentElement);
+          return;
+        }
+        substractedItem.quantity--;
+        // 2. update cart value
+        this.setCartValue(cart);
+        // 3. save cart
+        Storage.saveCart(cart);
+        // 4. update cart item in UI :
+        subQuontity.previousElementSibling.innerText = substractedItem.quantity;
+      }
+    });
   }
 
   clearCart() {
